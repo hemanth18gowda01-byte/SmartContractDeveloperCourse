@@ -17,41 +17,42 @@ Each candidate should have:
 - Candidate name
 - Number of votes*/
 
-contract VotingSystem{
-
-    int256 public numberOfCandidates=0;
+contract VotingSystem {
+    int256 public numberOfCandidates = 0;
 
     error AlreadyVoted();
 
-    struct Candidate{
+    struct Candidate {
         bytes32 CandidateId;
         string CandidateName;
         int256 NumberOfVotes;
     }
 
-    mapping(address=>Candidate) public addressToCandidate;
+    mapping(address => Candidate) public addressToCandidate;
 
-    function addCandidate(bytes32 _candidateId,string memory _candidateName,int256 _numberOfVotes) public {
-        addressToCandidate[msg.sender]=Candidate({CandidateId : _candidateId,CandidateName : _candidateName,NumberOfVotes : _numberOfVotes});
+    function addCandidate(bytes32 _candidateId, string memory _candidateName, int256 _numberOfVotes) public {
+        addressToCandidate[msg.sender] =
+            Candidate({CandidateId: _candidateId, CandidateName: _candidateName, NumberOfVotes: _numberOfVotes});
         numberOfCandidates += 1;
     }
+
     function vote() public {
-        if (addressToCandidate[msg.sender].NumberOfVotes==0){
-            addressToCandidate[msg.sender].NumberOfVotes=1;
-        }
-        else{
+        if (addressToCandidate[msg.sender].NumberOfVotes == 0) {
+            addressToCandidate[msg.sender].NumberOfVotes = 1;
+        } else {
             revert AlreadyVoted();
         }
     }
-    function getCondidate(address _address) public view returns(Candidate memory){
+
+    function getCondidate(address _address) public view returns (Candidate memory) {
         return addressToCandidate[_address];
     }
-    function getCandidateCount() public view returns(int256) {
+
+    function getCandidateCount() public view returns (int256) {
         return numberOfCandidates;
     }
     function getWinner() public {}
 }
-
 
 /*
 Voting rules
