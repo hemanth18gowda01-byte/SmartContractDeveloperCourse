@@ -10,24 +10,22 @@ increment()	- Increase counter by 1
 decrement()	- Decrease counter by 1
 reset()	  - Set counter to zero
 getCount()	- Return current count
-Constructor	- Set initial owner*/ 
-
-contract NumericalCounter{
+Constructor	- Set initial owner*/
+contract NumericalCounter {
     uint256 public counter;
     address immutable i_OWNER;
 
     error NotAdmin();
 
-    constructor(){
-        i_OWNER=msg.sender;
+    constructor() {
+        i_OWNER = msg.sender;
         counter = 0;
     }
 
-    modifier onlyAdmin(){
-        if (msg.sender==i_OWNER){
+    modifier onlyAdmin() {
+        if (msg.sender == i_OWNER) {
             _;
-        }
-        else{
+        } else {
             revert NotAdmin();
         }
     }
@@ -35,12 +33,15 @@ contract NumericalCounter{
     function increment() public {
         counter += 1;
     }
-    function decrement() public{ 
+
+    function decrement() public {
         counter -= 1;
     }
-    function getCount() public view returns(uint256){
+
+    function getCount() public view returns (uint256) {
         return counter;
     }
+
     function reset() public onlyAdmin {
         counter = 0;
     }
