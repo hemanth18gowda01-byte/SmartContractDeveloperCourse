@@ -57,15 +57,3 @@ contract StudentInfo {
         return studentPersonalDetails[_studentId];
     }
 }
-
-/* Requirements
-- Use appropriate Solidity data types.
-- Use a constructor to initialize the contract.
-- Create separate functions for updating and retrieving information.
-- Use appropriate visibility.
-- Make sure the getter does not modify state.
-Restrictions
-- Don't use structs yet.
-- Don't use mappings yet.
-- Don't use inheritance.
-- Don't copy code from tutorials.*/
