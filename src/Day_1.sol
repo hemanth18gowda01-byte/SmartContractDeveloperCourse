@@ -12,7 +12,7 @@ Your contract should support the following operations:
 5. Allow the student information to be updated.
 6. Retrieve the stored student information.*/
 
-contract StudentInfo{
+contract StudentInfo {
     string public StudentName;
     int256 public Age;
     string public UniversityName;
@@ -21,15 +21,14 @@ contract StudentInfo{
 
     error NotOwner();
 
-    constructor(){
+    constructor() {
         i_OWNER = msg.sender;
     }
 
     modifier onlyAdmin() {
-        if (msg.sender == i_OWNER){
+        if (msg.sender == i_OWNER) {
             _;
-        }
-        else{
+        } else {
             revert NotOwner();
         }
     }
@@ -41,23 +40,23 @@ contract StudentInfo{
         string _studentId;
     }
 
-    mapping(string=>StudentDetails) public studentPersonalDetails;
+    mapping(string => StudentDetails) public studentPersonalDetails;
 
-    function updateStoragedData(string memory _studentName,
-    int256 _age,
-    string memory _universityName,
-    string memory _studentId) onlyAdmin public {
-        studentPersonalDetails[_studentId]=StudentDetails({_studentName:_studentName,
-        _studentAge:_age,
-        _universityName:_universityName,
-        _studentId:_studentId});
+    function updateStoragedData(
+        string memory _studentName,
+        int256 _age,
+        string memory _universityName,
+        string memory _studentId
+    ) public onlyAdmin {
+        studentPersonalDetails[_studentId] = StudentDetails({
+            _studentName: _studentName, _studentAge: _age, _universityName: _universityName, _studentId: _studentId
+        });
     }
 
-    function revertStudentDetails(string calldata _studentId) public view virtual returns(StudentDetails memory){
+    function revertStudentDetails(string calldata _studentId) public view virtual returns (StudentDetails memory) {
         return studentPersonalDetails[_studentId];
     }
 }
-
 
 /* Requirements
 - Use appropriate Solidity data types.
