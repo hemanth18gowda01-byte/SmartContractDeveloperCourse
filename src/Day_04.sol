@@ -56,12 +56,10 @@ contract StudentRegistry {
 
     mapping(string => StudentDetails) public studentIdDetails;
 
-    function registryStudent(
-        string memory _studentName,
-        string memory _studentId,
-        uint256 _studentAge,
-        StudentStatus 
-    ) public onlyAdmin {
+    function registryStudent(string memory _studentName, string memory _studentId, uint256 _studentAge, StudentStatus)
+        public
+        onlyAdmin
+    {
         if (studentIdDetails[_studentId].registered == false) {
             studentIdDetails[_studentId] = StudentDetails({
                 studentName: _studentName,
@@ -76,12 +74,10 @@ contract StudentRegistry {
         }
     }
 
-    function updateStudent(
-        string memory _studentName,
-        string memory _studentId,
-        uint256 _studentAge,
-        StudentStatus  
-    ) public onlyAdmin {
+    function updateStudent(string memory _studentName, string memory _studentId, uint256 _studentAge, StudentStatus)
+        public
+        onlyAdmin
+    {
         studentIdDetails[_studentId] = StudentDetails({
             studentName: _studentName,
             studentId: _studentId,
