@@ -25,15 +25,14 @@ contract VotingSystem {
     error NotAdmin();
     error NoCandidateFound();
 
-    constructor(){
-        i_OWNER=msg.sender;
+    constructor() {
+        i_OWNER = msg.sender;
     }
 
-    modifier onlyAdmin(){
-        if (msg.sender==i_OWNER){
+    modifier onlyAdmin() {
+        if (msg.sender == i_OWNER) {
             _;
-        }
-        else{
+        } else {
             revert NotAdmin();
         }
     }
@@ -55,23 +54,21 @@ contract VotingSystem {
     }
 
     function vote(address _candidateAddress) public {
-        require(addressToCandidate[_candidateAddress].candidateId!="",NoCandidateFound());
-        for (uint i=0;i<voters.length;i++) {
-            if (msg.sender != voters[i]){
+        require(addressToCandidate[_candidateAddress].candidateId != "", NoCandidateFound());
+        for (uint256 i = 0; i < voters.length; i++) {
+            if (msg.sender != voters[i]) {
                 voters.push(msg.sender);
-                addressToCandidate[_candidateAddress].numberOfVotes+=1;
-            }
-            else{
+                addressToCandidate[_candidateAddress].numberOfVotes += 1;
+            } else {
                 revert AlreadyVoted();
             }
         }
     }
 
     function getCandidate(address _address) public view returns (Candidate memory) {
-        if (_address!=address(0)){
+        if (_address != address(0)) {
             return addressToCandidate[_address];
-        }
-        else{
+        } else {
             revert NoCandidateFound();
         }
     }
@@ -90,10 +87,10 @@ contract VotingSystem {
             if (current.numberOfVotes > winner.numberOfVotes) {
                 winner = current;
             }
-    }
+        }
 
-    return winner;
-}
+        return winner;
+    }
 }
 
 /*
