@@ -20,7 +20,7 @@ Each student should contain:
 - Age
 - Student status*/
 
-contract StudentRegistrty {
+contract StudentRegistry {
     error NotAdmin();
     error NotRegistered();
     error AlreadyRegistered();
@@ -54,18 +54,18 @@ contract StudentRegistrty {
         bool registered;
     }
 
-    mapping(bytes32 => StudentDetails) public studentIdToDetails;
+    mapping(string => StudentDetails) public studentIdDetails;
 
     function registryStudent(
-        string calldata _studentName,
-        string calldata _studentId,
+        string memory _studentName,
+        string memory _studentId,
         uint256 _studentAge,
-        StudentStatus calldata _status
+        StudentStatus 
     ) public onlyAdmin {
         if (studentIdDetails[_studentId].registered == false) {
             studentIdDetails[_studentId] = StudentDetails({
                 studentName: _studentName,
-                studentId: studentId,
+                studentId: _studentId,
                 studentAge: _studentAge,
                 studentStatus: StudentStatus.ACTIVE,
                 registered: true
@@ -77,38 +77,38 @@ contract StudentRegistrty {
     }
 
     function updateStudent(
-        string calldata _studentName,
-        string calldata _studentId,
+        string memory _studentName,
+        string memory _studentId,
         uint256 _studentAge,
-        StudentStatus calldata _status
+        StudentStatus  
     ) public onlyAdmin {
         studentIdDetails[_studentId] = StudentDetails({
             studentName: _studentName,
-            studentId: studentId,
+            studentId: _studentId,
             studentAge: _studentAge,
             studentStatus: StudentStatus.ACTIVE,
             registered: true
         });
     }
 
-    function suspendStudent(string calldata _studentId) public onlyAdmin {
-        if (bool(studentIdDetails[_studentId])) {
+    function suspendStudent(string memory _studentId) public onlyAdmin {
+        if (studentIdDetails[_studentId].registered) {
             studentIdDetails[_studentId].studentStatus = StudentStatus.SUSPENDED;
         } else {
             revert NotRegistered();
         }
     }
 
-    function reactivateStudent(string calldata _studentId) public onlyAdmin {
-        if (bool(studentIdDetails[_studentId])) {
+    function reactivateStudent(string memory _studentId) public onlyAdmin {
+        if (studentIdDetails[_studentId].registered) {
             studentIdDetails[_studentId].studentStatus = StudentStatus.ACTIVE;
         } else {
             revert NotRegistered();
         }
     }
 
-    function removeStudent(string calldata _studentId) public onlyAdmin {
-        if (bool(studentIdDetails[_studentId])) {
+    function removeStudent(string memory _studentId) public onlyAdmin {
+        if (studentIdDetails[_studentId].registered) {
             studentIdDetails[_studentId].studentStatus = StudentStatus.INACTIVE;
             numberOfStudents -= 1;
         } else {
@@ -116,8 +116,8 @@ contract StudentRegistrty {
         }
     }
 
-    function getStudent(string calldata _studentId) public view returns (StudentDetails memory) {
-        if (bool(studentIdDetails[_studentId])) {
+    function getStudent(string memory _studentId) public view returns (StudentDetails memory) {
+        if (studentIdDetails[_studentId].registered) {
             return studentIdDetails[_studentId];
         } else {
             revert NotRegistered();
