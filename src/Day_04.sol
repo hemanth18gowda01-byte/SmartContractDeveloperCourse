@@ -20,48 +20,97 @@ Each student should contain:
 - Age
 - Student status*/
 
-contract StudentRegistrty{
-
+contract StudentRegistrty {
     error NotAdmin();
     error NotRegistered();
-    
+    error AlreadyRegistered();
+
     address immutable i_OWNER;
     uint256 public numberOfStudents;
 
-    constructor(){
-        i_OWNER=msg.sender;
-        numberOfStudents=0;
+    constructor() {
+        i_OWNER = msg.sender;
+        numberOfStudents = 0;
     }
 
-    modifier onlyAdmin(){
-        if (msg.sender==i_OWNER){
+    modifier onlyAdmin() {
+        if (msg.sender == i_OWNER) {
             _;
-        }
-        else {
+        } else {
             revert NotAdmin();
         }
     }
-    enum StudentStatus{
-        ACTIVE;
-        INACTIVE;
-        PASSED_OUT;
-        SUSPENDED;
-
+    enum StudentStatus {
+        ACTIVE,
+        INACTIVE,
+        SUSPENDED
     }
 
-    struct StudentDetails{
+    struct StudentDetails {
         string studentName;
+        string studentId;
         uint256 studentAge;
         StudentStatus studentStatus;
+        bool registered = false;
     }
 
-    mapping(String=>StudentDetails) public nameToDetails;
+    mapping(bytes32 => StudentDetails) public studentIdToDetails;
 
-    function registryStudent() onlyAdmin public{}
-    function updateStudent() onlyAdmin public {}
-    function suspendStudent() onlyAdmin public {}
-    function reactivateStudent() onlyAdmin public {}
-    function removeStudent()onlyAdmin public {}
-    function getStudent() public view returns(StudentDetails memory){}
-    function getTotalStudent() public view returns(uint256) {}
+    function registryStudent(string calldata _studentName,string calldata _studentId,uint256 _studentAge,StudentStatus calldata _status) public onlyAdmin {
+        if(studentIdDetails[_studentId].registered==false){
+            studentIdDetails[_studentId]=StudentDetails({studentName:_studentName,
+            studentId:studentId,
+            studentAge:_studentAge,
+            studentStatus:StudentStatus.ACTIVE,
+            registered:true});
+            numberOfStudents+=1;
+        }
+        else{
+            revert AlreadyRegistered();
+        }
+
+    }
+    function updateStudent(string calldata _studentName,string calldata _studentId,uint256 _studentAge,StudentStatus calldata _status) public onlyAdmin {
+        studentIdDetails[_studentId]=StudentDetails({studentName:_studentName,
+            studentId:studentId,
+            studentAge:_studentAge,
+            studentStatus:StudentStatus.ACTIVE,
+            registered:true});
+    }
+    function suspendStudent(string calldata _studentId) public onlyAdmin {
+        if (bool(studentIdDetails[_studentId])){
+            studentIdDetails[_studentId].studentStatus=StudentStatus.SUSPENDED;
+        }
+        else{
+            revert NotRegistered();
+        }
+    }
+    function reactivateStudent(string calldata _studentId) public onlyAdmin {
+        if (bool(studentIdDetails[_studentId])){
+            studentIdDetails[_studentId].studentStatus=StudentStatus.ACTIVE;
+        }
+        else{
+            revert NotRegistered();
+        }
+    }
+    function removeStudent(string calldata _studentId) public onlyAdmin {
+        if (bool(studentIdDetails[_studentId])){
+            studentIdDetails[_studentId].studentStatus=StudentStatus.INACTIVE;
+            numberOfStudents-=1;
+        }
+        else{
+            revert NotRegistered();
+        }
+    }
+    function getStudent(string calldata _studentId) public view returns (StudentDetails memory) {
+        if (bool(studentIdDetails[_studentId])){
+            return studentIdDetails[_studentId];
+        }
+        else{
+            revert NotRegistered();
+        }
+    }
+    function getTotalStudent() public view returns (uint256) {
+        return numberOfStudents;
+    }
 }
