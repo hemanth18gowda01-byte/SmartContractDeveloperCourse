@@ -17,7 +17,8 @@ removeProduct()	Remove a product
 getProduct()	Retrieve a product by index
 getAllProducts()	Return all products
 getProductCount()	Return total products
-findProduct()	Find a product by ID*/
+findProduct()	Find a product by ID 
+*/
 
 contract Product {
     error NoProductFound();
