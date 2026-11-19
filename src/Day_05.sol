@@ -10,8 +10,8 @@ Each task should have:
 - Completion status
 Functional requirements
 Function	Expected behavior
-createTask()	Create a new task
-updateTask()	Update task title
-completeTask()	Mark task completed
-getTask()	Retrieve task information
-previewTask()	Preview changes without saving them*/
+createTask() -	Create a new task
+updateTask() -	Update task title
+completeTask() -	Mark task completed
+getTask() -	Retrieve task information
+previewTask() -	Preview changes without saving them*/
