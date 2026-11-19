@@ -34,13 +34,13 @@ contract TaskManagement{
                 taskId:_taskId,
                 taskTitle:_taskTitle,
                 completionStatus:false
-            })
+            });
         }
         else{
             revert AlreadyTaskExist();
         }
     }
-    function updateTask(string memory _taskTitle) public{
+    function updateTask(uint256 _taskId,string memory _taskTitle) public{
         if (_taskId==taskIdToTask[_taskId].taskId){
             taskIdToTask[_taskId].taskTitle=_taskTitle;
         }
@@ -65,13 +65,8 @@ contract TaskManagement{
             revert NoTaskFound();
         }
     }
-    function previewTask(uint256 _taskId,string calldata _taskTitle,bool _status) public view returns(TaskInfo calldata){
-        taskIdToTask[_taskId]=TaskInfo({
-                taskId:_taskId,
-                taskTitle:_taskTitle,
-                completionStatus:_status
-        });
-        return taskIdToTask[_taskId];
+    function previewTask(uint256 _taskId,string calldata _taskTitle,bool _status) public pure returns(uint256,string memory,bool){
+        return (_taskId,_taskTitle,_status);
         
     }
 }
