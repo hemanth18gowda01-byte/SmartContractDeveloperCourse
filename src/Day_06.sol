@@ -112,7 +112,13 @@ contract Product {
         }
         revert NoProductFound();
     }
-    function getAllProducts() public view returns (ProductInfo[] memory) {}
-    function getProductCount() public view returns (uint256) {}
-    function findProduct(uint256 _productId) public pure returns (ProductInfo memory) {}
+    function getAllProducts() public view returns (ProductInfo[] memory) {
+        return allProducts;
+    }
+    function getProductCount() public view returns (uint256) {
+        return numberOfProducts;
+    }
+    function findProduct(uint256 _productId) public view returns (ProductInfo memory) {
+        return productIdToProduct[_productId];
+    }
 }
