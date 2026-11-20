@@ -105,7 +105,12 @@ contract Product {
     }
 
     function getProduct(uint256 _productId) public view returns (ProductInfo memory) {
-        for (int256 i = 0; i < allProducts.length(); i++) {}
+        for (uint256 i = 0; i < allProducts.length; i++) {
+            if (allProducts[i].productId == _productId) {
+                return allProducts[i];
+            }
+        }
+        revert NoProductFound();
     }
     function getAllProducts() public view returns (ProductInfo[] memory) {}
     function getProductCount() public view returns (uint256) {}
