@@ -27,7 +27,7 @@ contract Product {
 
     address private immutable i_OWNER;
     address private MANAGER;
-    uint256 public numberOfProducts;
+    uint256 public numberOfProducts=0;
 
     constructor(address _manager) {
         i_OWNER = msg.sender;
@@ -60,11 +60,34 @@ contract Product {
     mapping(uint256 => ProductInfo) public productIdToProduct;
     ProductInfo[] public allProducts;
 
-    function addProduct() public Admin Manager {}
-    function updateProduct() public Admin Manager {}
-    function removeProduct() public Admin Manager {}
-    function getProduct() public view returns (ProductInfo) {}
+    function addProduct(uint256 _productId,string calldata _productName,int256 _productPrice) public Admin Manager {
+        productIdToProduct[_productId]=ProductInfo({productId:_productId,
+        productName:_productName,
+        productPrice:_productPrice,
+        avalabilityStatus:true});
+        allProducts.push(productIdToProduct[_productId]);
+
+    }
+    function updateProduct(uint256 _productId,string calldata _productName,int256 _productPrice,bool _status) public Admin Manager {
+        allProducts.delete(productIdToProduct[_productId]);
+        productIdToProduct[_productId]=ProductInfo({productId:_productId,
+        productName:_productName,
+        productPrice:_productPrice,
+        avalabilityStatus:_status});
+        allProducts.push(productIdToProduct[_productId]);
+
+    }
+    function removeProduct(uint256 _productId) public Admin Manager {
+        allproducts.delete(productIdProduct[_productId]);
+        delete productIdProduct[_productId];
+
+    }
+    function getProduct(uint256 _productId) public view returns (ProductInfo memory) {
+        for (int i =0;i<allProducts.length();i++){
+            if (allProducts)
+        }
+    }
     function getAllProducts() public view returns (ProductInfo[] memory) {}
     function getProductCount() public view returns (uint256) {}
-    function findProduct() public pure returns (ProductInfo memory) {}
+    function findProduct(uint256 _productId) public pure returns (ProductInfo memory) {}
 }
