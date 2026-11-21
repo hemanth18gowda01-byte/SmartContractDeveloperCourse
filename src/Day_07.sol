@@ -25,7 +25,8 @@ contract UsernameRegistry {
 
     mapping(address => Registry) public addressToRegistry;
 
-    function registerUsername() public {}
+    function registerUsername(string memory _userName) public {
+        address to registry[msg.sender]=Registry({username:_userName,addressOfUser:msg.sender})}
     function getMyUsername() public {}
     function isUsernameAvailable() public {}
     function validateUsername() public {}
