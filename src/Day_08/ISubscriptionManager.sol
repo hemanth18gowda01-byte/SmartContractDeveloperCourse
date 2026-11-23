@@ -21,3 +21,6 @@ Create an interface exposing:
 
 Use the correct function visibility and mutability.
 */
+interface ISubscription{
+    function isActive(address user) external view returns(bool);
+}
