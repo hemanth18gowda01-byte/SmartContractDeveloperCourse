@@ -26,10 +26,10 @@ contract UsernameRegistry {
     mapping(address => Registry) public addressToRegistry;
 
     function registerUsername(string memory _userName) public {
-        addressToRegistry[msg.sender] = Registry({username: _userName, addressOfUser: msg.sender});
+        addressToRegistry[msg.sender] = Registry({userName: _userName, addressOfUser: msg.sender});
     }
 
-    function getMyUsername() public view returns (Registry) {
+    function getMyUsername() public view returns (Registry memory) {
         return addressToRegistry[msg.sender];
     }
     function isUsernameAvailable() public {}
