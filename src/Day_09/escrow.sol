@@ -46,21 +46,19 @@ Allow the buyer to reclaim ETH if delivery hasn't been confirmed and the escrow 
 
 Use block.timestamp for expiry.*/
 
-contract Escrow{
-
+contract Escrow {
     error OnlyOwnerCanMakeChanges();
 
     address immutable i_OWNER;
 
-    constructor(){
-        i_OWNER=msg.sender;
+    constructor() {
+        i_OWNER = msg.sender;
     }
-    
-    event confirming(address indexed owner,uint256 amount,bool status);
+
+    event confirming(address indexed owner, uint256 amount, bool status);
 
     function deposit() public payable {}
     function confirmDelivery() public {}
     function withdraw() external {}
     function refund() public {}
-
 }
