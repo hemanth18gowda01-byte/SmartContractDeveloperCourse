@@ -1,5 +1,6 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.35;
+
 /*1. SubscriptionManager.sol
 Create a contract that manages user subscriptions.
 
@@ -15,56 +16,60 @@ Requirements:
 - Use block.timestamp to calculate expiry.
 - If a user renews before expiry, extend from the existing expiry rather than losing the remaining time.
 - If already expired, calculate the new expiry from the current timestamp.*/
-contract Subscription{
+contract Subscription {
     error AddressAlreadyRegistered_OR_NoAddressFound();
     error SubscriptionExpired();
 
     uint256 public expiryDuration;
-    constructor(){
-        expiryDuration=1 weeks;
+
+    constructor() {
+        expiryDuration = 1 weeks;
     }
 
-    struct Subscriber{
+    struct Subscriber {
         address userAddress;
         bool currentStatus;
         uint256 timeStamp;
-        uint256  expiryTime;
+        uint256 expiryTime;
     }
     address[] public subscribers;
-    mapping(address=>Subscriber) public mappedToSubDetails;
+    mapping(address => Subscriber) public mappedToSubDetails;
 
     function subscribe() public virtual {
-        for (uint i=0;i<subscribers.length;i++){
-            if(msg.sender!=address(0)&&msg.sender!=subscribers[i]){
+        for (uint256 i = 0; i < subscribers.length; i++) {
+            if (msg.sender != address(0) && msg.sender != subscribers[i]) {
                 subscribers.push(msg.sender);
-                mappedToSubDetails[msg.sender]=Subscriber({userAddress:msg.sender,currentStatus:true,timeStamp:block.timestamp,expiryTime:block.timestamp+expiryDuration});
-            }
-            else{
+                mappedToSubDetails[msg.sender] = Subscriber({
+                    userAddress: msg.sender,
+                    currentStatus: true,
+                    timeStamp: block.timestamp,
+                    expiryTime: block.timestamp + expiryDuration
+                });
+            } else {
                 revert AddressAlreadyRegistered_OR_NoAddressFound();
             }
         }
     }
-    function isActive(address _address) public view returns(bool){
+
+    function isActive(address _address) public view returns (bool) {
         bool result;
-        uint256 remainingTime=(mappedToSubDetails[_address].timeStamp+expiryDuration)-block.timestamp;
-        for (uint i=0;i<subscribers.length;i++){
-            if(_address==subscribers[i]&&remainingTime>0){
-                result=mappedToSubDetails[_address].currentStatus;
+        uint256 remainingTime = (mappedToSubDetails[_address].timeStamp + expiryDuration) - block.timestamp;
+        for (uint256 i = 0; i < subscribers.length; i++) {
+            if (_address == subscribers[i] && remainingTime > 0) {
+                result = mappedToSubDetails[_address].currentStatus;
                 break;
-            }
-            else{
-                result=false;
+            } else {
+                result = false;
             }
         }
         return result;
-
     }
-    function getExpiry(address _address) public view returns(uint256){
-        uint256 remainingTime=(mappedToSubDetails[_address].timeStamp+expiryDuration)-block.timestamp;
-        if(remainingTime>=uint256(0)){
+
+    function getExpiry(address _address) public view returns (uint256) {
+        uint256 remainingTime = (mappedToSubDetails[_address].timeStamp + expiryDuration) - block.timestamp;
+        if (remainingTime >= uint256(0)) {
             return remainingTime;
-        }
-        else{
+        } else {
             revert SubscriptionExpired();
         }
     }

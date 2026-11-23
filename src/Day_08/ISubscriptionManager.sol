@@ -1,5 +1,6 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.35;
+
 /*Challenge
 Build a subscription system using two separate smart contracts that communicate through an interface.
 System architecture
@@ -21,6 +22,6 @@ Create an interface exposing:
 
 Use the correct function visibility and mutability.
 */
-interface ISubscription{
-    function isActive(address user) external view returns(bool);
+interface ISubscription {
+    function isActive(address user) external view returns (bool);
 }
