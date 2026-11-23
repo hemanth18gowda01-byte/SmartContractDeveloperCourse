@@ -19,16 +19,16 @@ contract Subscription{
     error AddressAlreadyRegistered_OR_NoAddressFound();
     error SubscriptionExpired();
 
-    bytes32 public expiryDuration;
+    uint256 public expiryDuration;
     constructor(){
-        expiryDuration=bytes(uint256(1 weeks));
+        expiryDuration=1 weeks;
     }
 
     struct Subscriber{
         address userAddress;
         bool currentStatus;
-        bytes32 timeStamp;
-        bytes32 expiryTime;
+        uint256 timeStamp;
+        uint256  expiryTime;
     }
     address[] public subscribers;
     mapping(address=>Subscriber) public mappedToSubDetails;
@@ -37,7 +37,7 @@ contract Subscription{
         for (uint i=0;i<subscribers.length;i++){
             if(msg.sender!=address(0)&&msg.sender!=subscribers[i]){
                 subscribers.push(msg.sender);
-                mappedToSubDetails[msg.sender]=Subsciber({userAddress:msg.sender;currentStatus:true;timeStamp:block.timestamp;expiryTime:block.timestamp+expiryDuration});
+                mappedToSubDetails[msg.sender]=Subscriber({userAddress:msg.sender,currentStatus:true,timeStamp:block.timestamp,expiryTime:block.timestamp+expiryDuration});
             }
             else{
                 revert AddressAlreadyRegistered_OR_NoAddressFound();
@@ -45,19 +45,23 @@ contract Subscription{
         }
     }
     function isActive(address _address) public view returns(bool){
+        bool result;
+        uint256 remainingTime=(mappedToSubDetails[_address].timeStamp+expiryDuration)-block.timestamp;
         for (uint i=0;i<subscribers.length;i++){
-            if(msg.sender==subscribers[i]){
-                return mappedToSubDetails[msg.sender].currentStatus;
+            if(_address==subscribers[i]&&remainingTime>0){
+                result=mappedToSubDetails[_address].currentStatus;
+                break;
             }
             else{
-                revert AddressAlreadyRegistered_OR_NoAddressFound();
+                result=false;
             }
         }
+        return result;
 
     }
-    function getExpiry(address _address) public view returns(bytes32){
-        bytes32 remainingTime=(mappedToSubDetails[msg.sender].timeStamp+expiryDuration)-block.timestamp;
-        if(remainingTime>=bytes(0)){
+    function getExpiry(address _address) public view returns(uint256){
+        uint256 remainingTime=(mappedToSubDetails[_address].timeStamp+expiryDuration)-block.timestamp;
+        if(remainingTime>=uint256(0)){
             return remainingTime;
         }
         else{
