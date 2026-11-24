@@ -50,9 +50,12 @@ contract Escrow {
     error OnlyOwnerCanMakeChanges();
     error InsufficientFunds();
     error NoBuyerFound();
+    error refundFailed();
 
     address immutable i_BUYER;
     uint256 public numberOfBuyers;
+    uint256 public i_DURATION;
+    address immutable i_SELLER;
     /*A. Deposit
 
 Buyer deposits ETH using deposit().
@@ -61,15 +64,18 @@ Store the buyer's address and deposited amount.
 
 Only one active escrow at a time.*/
 
-    constructor() {
+    constructor(address _seller) {
         i_BUYER = msg.sender;
+        i_SELLER = _seller;
         numberOfBuyers=0;
+        i_DURATION=1 week;
     }
 
     struct BuyerDetails{
         address buyer;
         uint256 depositedAmount;
         bool confirmationStatus;
+        uint256 time;
     }
 
     mapping(address=>BuyerDetails) public buyerdetails;
@@ -88,7 +94,7 @@ Only one active escrow at a time.*/
 
     function deposit() public payable {
         if(msg.value>0){
-            buyerdetails[msg.sender]=BuyerDetails({buyer:msg.sender,depositedAmount:msg.value,confimationStatus:false});
+            buyerdetails[msg.sender]=BuyerDetails({buyer:msg.sender,depositedAmount:msg.value,confimationStatus:false,time:block.timestamp});
             buyers.push(msg.sender);
             numberOfBuyers+=1;
         }
@@ -106,13 +112,26 @@ Only one active escrow at a time.*/
         }
         emit confirming(owner=msg.sender,amount=buyerdetails[msg.sender].depositedAmount,status:buyerdetails[msg.sender].confirmationStatus);
     }
-    function withdraw() external payable onlyBuyer{
-        (bool success,)=recipient.call{value:buyerdetails[msg.sender].depositedAmount}("");
-        if (success){
-            buyerdetails[msg.sender].buyer=address(0);
-            buyerdetails[msg.sender].depositedAmount=0;
-            buyerdetails[msg.sender].confirmationStatus=false;
+    function withdraw() external payable onlySeller{
+        if(address(this).value>0){
+            (bool success,)=i_SELLER.call{value:address(this).value}("");
+            address(this).balance=0;
+        }
+        else{
+            revert InsufficientFunds();
         }
     }
-    function refund() public {}
+    function refund() public onlyBuyer{
+        if (block.timestamp>buyerdetails[msg.sender].time+i_DURATION){
+            (bool success,)=recipient.call{value:buyerdetails[msg.sender].depositedAmount}("");
+            if (success){
+                buyerdetails[msg.sender].buyer=address(0);
+                buyerdetails[msg.sender].depositedAmount=0;
+                buyerdetails[msg.sender].confirmationStatus=false;
+            }
+            else{
+                revert refundFailed();
+            }
+        }
+    }
 }
