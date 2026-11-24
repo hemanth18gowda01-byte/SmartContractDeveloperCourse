@@ -1,14 +1,6 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.35;
-/*i have already done this
-Ayyy, my bad Mochi! 😂❤️ No repeating completed exercises.
-
-Let's skip RBAC and move forward to a new challenge.
-
-Day 12 — ETH Escrow & Secure Withdrawals
-Intermediate+
-30–40 minutes
-ETH security
+/*
 Problem: Build an escrow contract where a buyer deposits ETH, an administrator confirms delivery, and the seller withdraws the funds.
 
 1. Functional requirements
@@ -118,11 +110,10 @@ contract Escrow {
                 buyerdetails[msg.sender].confirmationStatus = true;
                 break;
             }
-            revert NoBuyerFound();
         }
-        emit confirming(
-            msg.sender, buyerdetails[msg.sender].depositedAmount, buyerdetails[msg.sender].confirmationStatus
-        );
+        revert NoBuyerFound();
+
+        emit confirming(msg.sender, buyerdetails[msg.sender].depositedAmount, buyerdetails[msg.sender].confirmationStatus);
     }
 
     function withdraw() external payable onlySeller {
