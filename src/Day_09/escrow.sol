@@ -48,17 +48,71 @@ Use block.timestamp for expiry.*/
 
 contract Escrow {
     error OnlyOwnerCanMakeChanges();
+    error InsufficientFunds();
+    error NoBuyerFound();
 
-    address immutable i_OWNER;
+    address immutable i_BUYER;
+    uint256 public numberOfBuyers;
+    /*A. Deposit
+
+Buyer deposits ETH using deposit().
+
+Store the buyer's address and deposited amount.
+
+Only one active escrow at a time.*/
 
     constructor() {
-        i_OWNER = msg.sender;
+        i_BUYER = msg.sender;
+        numberOfBuyers=0;
     }
+
+    struct BuyerDetails{
+        address buyer;
+        uint256 depositedAmount;
+        bool confirmationStatus;
+    }
+
+    mapping(address=>BuyerDetails) public buyerdetails;
+    address[] public buyers;
 
     event confirming(address indexed owner, uint256 amount, bool status);
 
-    function deposit() public payable {}
-    function confirmDelivery() public {}
-    function withdraw() external {}
+    modifier onlyBuyer() internal{
+        if(msg.sender==i_BUYER){
+            _;
+        }
+        else{
+             revert OnlyOwnerCanMakeChanges();
+        }
+    }
+
+    function deposit() public payable {
+        if(msg.value>0){
+            buyerdetails[msg.sender]=BuyerDetails({buyer:msg.sender,depositedAmount:msg.value,confimationStatus:false});
+            buyers.push(msg.sender);
+            numberOfBuyers+=1;
+        }
+        else{
+            revert InsufficientFunds();
+        }
+    }
+    function confirmDelivery() public onlyBuyer {
+        for(uint i=0;i<buyers.length;i++){
+            if(msg.sender==buyers[i]&&msg.sender==buyerdetails[msg.sender].buyer){
+                buyerdetails[msg.sender].confirmationStatus=true;
+                break;
+            }
+            revert NoBuyerFound(); 
+        }
+        emit confirming(owner=msg.sender,amount=buyerdetails[msg.sender].depositedAmount,status:buyerdetails[msg.sender].confirmationStatus);
+    }
+    function withdraw() external payable onlyBuyer{
+        (bool success,)=recipient.call{value:buyerdetails[msg.sender].depositedAmount}("");
+        if (success){
+            buyerdetails[msg.sender].buyer=address(0);
+            buyerdetails[msg.sender].depositedAmount=0;
+            buyerdetails[msg.sender].confirmationStatus=false;
+        }
+    }
     function refund() public {}
 }
