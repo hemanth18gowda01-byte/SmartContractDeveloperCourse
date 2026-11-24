@@ -91,11 +91,19 @@ contract Escrow {
         }
     }
 
+    modifier onlySeller() {
+        if (msg.sender == i_SELLER) {
+            _;
+        } else {
+            revert OnlyOwnerCanMakeChanges();
+        }
+    }
+
     function deposit() public payable {
         if (msg.value > 0) {
             buyerdetails[msg.sender] =
                 BuyerDetails({
-                buyer: msg.sender, depositedAmount: msg.value, confimationStatus: false, time: block.timestamp
+                buyer: msg.sender, depositedAmount: msg.value, confirmationStatus: false, time: block.timestamp
             });
             buyers.push(msg.sender);
             numberOfBuyers += 1;
@@ -118,9 +126,8 @@ contract Escrow {
     }
 
     function withdraw() external payable onlySeller {
-        if (address(this).value > 0) {
-            (bool success,) = i_SELLER.call{value: address(this).value}("");
-            address(this).balance = 0;
+        if (address(this).balance > 0) {
+            (bool success,) = i_SELLER.call{value: address(this).balance}("");
         } else {
             revert InsufficientFunds();
         }
@@ -128,7 +135,7 @@ contract Escrow {
 
     function refund() public onlyBuyer {
         if (block.timestamp > buyerdetails[msg.sender].time + i_DURATION) {
-            (bool success,) = recipient.call{value: buyerdetails[msg.sender].depositedAmount}("");
+            (bool success,) = i_BUYER.call{value: buyerdetails[msg.sender].depositedAmount}("");
             if (success) {
                 buyerdetails[msg.sender].buyer = address(0);
                 buyerdetails[msg.sender].depositedAmount = 0;
