@@ -93,8 +93,7 @@ contract Escrow {
 
     function deposit() public payable {
         if (msg.value > 0) {
-            buyerdetails[msg.sender] =
-                BuyerDetails({
+            buyerdetails[msg.sender] = BuyerDetails({
                 buyer: msg.sender, depositedAmount: msg.value, confirmationStatus: false, time: block.timestamp
             });
             buyers.push(msg.sender);
@@ -113,7 +112,9 @@ contract Escrow {
         }
         revert NoBuyerFound();
 
-        emit confirming(msg.sender, buyerdetails[msg.sender].depositedAmount, buyerdetails[msg.sender].confirmationStatus);
+        emit confirming(
+            msg.sender, buyerdetails[msg.sender].depositedAmount, buyerdetails[msg.sender].confirmationStatus
+        );
     }
 
     function withdraw() external payable onlySeller {
