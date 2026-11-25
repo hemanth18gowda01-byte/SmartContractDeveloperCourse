@@ -46,6 +46,7 @@ contract FundMe {
     error NotOwner();
     error LessThanMinimum();
     error FundTransferFailed();
+    error NoFundsToWithdraw();
 
     uint256 public constant MINIMUM_USD = 2 * 10 ** 18; // Minimum contribution in USD (scaled to 18 decimals)
     address immutable i_OWNER;
@@ -62,12 +63,17 @@ contract FundMe {
         _;
     }
 
+    address[] public funders;
+    mapping(address => uint256) public addressToAmountFunded;
+
     function fund() public payable {
         if(msg.value >= MINIMUM_USD) {
             (bool sent, ) = payable(msg.sender).call{value: msg.value}("");
             if(!sent) {
                 revert FundTransferFailed();
             }
+            funders.push(msg.sender);
+            addressToAmountFunded[msg.sender] += msg.value;
         }
         else{
             revert LessThanMinimum();
@@ -81,9 +87,14 @@ contract FundMe {
         return ethtoUsdPriceFeed;
     }
     function withdraw() public onlyowner{
-        (bool sent, ) = payable(i_OWNER).call{value: address(this).balance}("");
-        if(!sent) {
-            revert FundTransferFailed();
+        if (address(this).balance != 0) {
+            (bool sent, ) = payable(i_OWNER).call{value: address(this).balance}("");
+            if(!sent) {
+                revert FundTransferFailed();
+            }
+        }
+        else{
+            revert NoFundsToWithdraw();
         }
     }
 }
