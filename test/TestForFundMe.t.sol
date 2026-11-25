@@ -46,6 +46,14 @@ assertEq()	Verify expected values
 
 Also use makeAddr() to create test addresses.*/
 
-contract TestForFundMe {
-    // Your test implementation goes here
+import {Test} from "forge-std/Test.sol";
+import {FundMe} from "../Day_11/FundMe.sol";
+
+contract TestForFundMe is Test {
+    FundMe public fundMe;
+
+    function fund() public payable {}
+    function setUp() public {}
+    function withdraw() public {}
+    function getConversionRate() public {}
 }
