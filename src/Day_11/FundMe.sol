@@ -39,7 +39,7 @@ withdraw()
 - Follow Checks-Effects-Interactions.
 - Reset contributor accounting after successful withdrawal.*/
 
-import {PriceConverter} from "../Day_10/ETHPriceConverter.sol";
+import {ETHPriceConverter} from "../Day_10/ETHPriceConverter.sol";
 
 contract FundMe {
     error NotOwner();
@@ -49,10 +49,11 @@ contract FundMe {
 
     uint256 public constant MINIMUM_USD = 2 * 10 ** 18; // Minimum contribution in USD (scaled to 18 decimals)
     address immutable i_OWNER;
-    uint256 public ethtoUsdPriceFeed;
+    ETHPriceConverter private immutable i_priceConverter;
 
-    constructor() {
+    constructor(address priceFeedAddress) {
         i_OWNER = msg.sender;
+        i_priceConverter = new ETHPriceConverter(priceFeedAddress);
     }
 
     modifier onlyowner() {
@@ -79,10 +80,7 @@ contract FundMe {
     }
 
     function getConversionRate(uint256 ethAmount) public view returns (uint256) {
-        PriceConverter priceConverter = new PriceConverter();
-        priceConverter.getConversionRate(ethAmount);
-        ethtoUsdPriceFeed = uint256(priceConverter.getConversionRate(ethAmount));
-        return ethtoUsdPriceFeed;
+        return uint256(i_priceConverter.getConversionRate(ethAmount));
     }
 
     function withdraw() public onlyowner {
