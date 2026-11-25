@@ -42,13 +42,48 @@ withdraw()
 import {PriceConverter} from "../Day_10/ETHPriceConverter.sol";
 
 contract FundMe {
+
+    error NotOwner();
+    error LessThanMinimum();
+    error FundTransferFailed();
+
+    uint256 public constant MINIMUM_USD = 2 * 10 ** 18; // Minimum contribution in USD (scaled to 18 decimals)
+    address immutable i_OWNER;
+    uint256 public ethtoUsdPriceFeed;
+
+    constructor() {
+        i_OWNER = msg.sender;
+    }
+
+    modifier onlyowner() {
+        if (msg.sender != i_OWNER) {
+            revert NotOwner();
+        }
+        _;
+    }
+
     function fund() public payable {
-        // Implementation of funding logic
+        if(msg.value >= MINIMUM_USD) {
+            (bool sent, ) = payable(msg.sender).call{value: msg.value}("");
+            if(!sent) {
+                revert FundTransferFailed();
+            }
+        }
+        else{
+            revert LessThanMinimum();
+        }
+        
     }
     function getConversionRate(uint256 ethAmount) public view returns (uint256) {
-        // Implementation of price conversion logic
+        PriceConverter priceConverter = new PriceConverter();
+        priceConverter.getConversionRate(ethAmount);
+        ethtoUsdPriceFeed = uint256(priceConverter.getConversionRate(ethAmount));
+        return ethtoUsdPriceFeed;
     }
-    function withdraw() public {
-        // Implementation of withdrawal logic
+    function withdraw() public onlyowner{
+        (bool sent, ) = payable(i_OWNER).call{value: address(this).balance}("");
+        if(!sent) {
+            revert FundTransferFailed();
+        }
     }
 }
