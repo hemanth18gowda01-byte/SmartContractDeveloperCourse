@@ -70,20 +70,17 @@ contract FundMe {
         if (msg.value >= MINIMUM_USD) {
             (bool sent,) = payable(msg.sender).call{value: msg.value}("");
             if (sent) {
-                for(uint256 i=0;i<funders.length;i++){
-                    if(msg.sender==funders[i]){
+                for (uint256 i = 0; i < funders.length; i++) {
+                    if (msg.sender == funders[i]) {
                         addressToAmountFunded[msg.sender] += msg.value;
-                    }
-                    else{
+                    } else {
                         funders.push(msg.sender);
                         addressToAmountFunded[msg.sender] += msg.value;
                     }
                 }
-            }
-            else{
+            } else {
                 revert FundTransferFailed();
             }
-           
         } else {
             revert LessThanMinimum();
         }
