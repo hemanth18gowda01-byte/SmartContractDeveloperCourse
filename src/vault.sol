@@ -3,6 +3,7 @@ pragma solidity ^0.8.35;
 
 contract Vault {
     address public owner;
+
     constructor() {
         owner = msg.sender;
     }
@@ -21,7 +22,7 @@ contract Vault {
     function withdraw(uint256 amount) external onlyOwner {
         require(amount <= balances[msg.sender], "Insufficient balance");
         balances[msg.sender] -= amount;
-        (bool success, ) = msg.sender.call{value: amount}("");
+        (bool success,) = msg.sender.call{value: amount}("");
         require(success, "Withdrawal failed");
     }
 
