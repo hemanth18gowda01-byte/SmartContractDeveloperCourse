@@ -1,66 +1,41 @@
-## Foundry
+# Script
+Script ran successfully.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+== Logs ==
+  FundMe deployed to:  0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
 
-Foundry consists of:
+## Setting up 1 EVM.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+==========================
 
-## Documentation
+Chain 31337
 
-https://book.getfoundry.sh/
+Estimated gas price: 2.000000001 gwei
 
-## Usage
+Estimated total gas used for script: 1646359
 
-### Build
+Estimated amount required: 0.003292718001646359 ETH
 
-```shell
-$ forge build
-```
+==========================
 
-### Test
+##### anvil-hardhat
+✅  [Success] Hash: 0x91718ec58eefff1aab7635cee03443e6fedbf92323d50bd71b68a1eebfd70ba8
+Contract: ETHPriceConverter
+Contract Address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+Block: 1
+Paid: 0.000367332000367332 ETH (367332 gas * 1.000000001 gwei)
 
-```shell
-$ forge test
-```
 
-### Format
+##### anvil-hardhat
+✅  [Success] Hash: 0x9a86963311717e3fa9c653682e48cea17105246c14df30fea1fa66c9fdb064b2
+Contract: FundMe
+Contract Address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+Block: 2
+Paid: 0.000789463857847999 ETH (899099 gas * 0.878061101 gwei)
 
-```shell
-$ forge fmt
-```
+✅ Sequence #1 on anvil-hardhat | Total Paid: 0.001156795858215331 ETH (1266431 gas * avg 0.939030551 gwei)
+                                                                                                                               
 
-### Gas Snapshots
+==========================
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.

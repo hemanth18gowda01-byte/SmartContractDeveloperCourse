@@ -33,8 +33,15 @@ After deployment, verify:
 
 import {Script} from "forge-std/Script.sol";
 import {FundMe} from "../src/Day_11/FundMe.sol";
-import {EthUsdPriceFeedMock} from "../src/Day_11/mocks/EthUsdPriceFeedMock.sol";
+import {ETHPriceConverter} from "../src/Day_10/ETHPriceConverter.sol";
+import {console} from "forge-std/console.sol";
 
 contract DeployFundMe is Script{
-    
+    function run() external{
+        vm.startBroadcast();
+        ETHPriceConverter ethPriceConverter = new ETHPriceConverter(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        FundMe fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        vm.stopBroadcast();
+        console.log("FundMe deployed to: ", address(fundMe));
+    }
 }
