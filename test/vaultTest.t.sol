@@ -17,3 +17,7 @@ Foundry tools:
 - vm.deal()
 - vm.expectRevert()
 - assertEq()*/
+import {Test, console} from "forge-std/Test.sol";
+import {Vault} from "../src/vault.sol";
+
+contract VaultTest is Test{}
