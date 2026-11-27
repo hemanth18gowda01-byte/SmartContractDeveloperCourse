@@ -39,3 +39,10 @@ Paid: 0.000789463857847999 ETH (899099 gas * 0.878061101 gwei)
 ==========================
 
 ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+# vm cheat codes
+Foundry provides similar helpers for other data types:
+• vm.envUint("PRIVATE_KEY") — reads a uint256 (commonly used for private keys).
+• vm.envString("RPC_URL") — reads a string.
+• vm.envBool("IS_MAINNET") — reads a bool (true / false).
+• vm.envOr("VAR_NAME", defaultValue) — reads a variable, or falls back to defaultValue instead of reverting if it's missing.
