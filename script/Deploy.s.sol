@@ -36,8 +36,8 @@ import {FundMe} from "../src/Day_11/FundMe.sol";
 import {ETHPriceConverter} from "../src/Day_10/ETHPriceConverter.sol";
 import {console} from "forge-std/console.sol";
 
-contract DeployFundMe is Script{
-    function run() external{
+contract DeployFundMe is Script {
+    function run() external {
         vm.startBroadcast();
         ETHPriceConverter ethPriceConverter = new ETHPriceConverter(0x694AA1769357215DE4FAC081bf1f309aDC325306);
         FundMe fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
